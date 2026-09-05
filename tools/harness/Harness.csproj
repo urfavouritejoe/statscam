@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Verification harness. Compiles the game-independent half of StatsCam (the state
+    model, the JSON writer and the overlay layout), drives it with synthetic events and
+    renders the overlay to SVG, so all of that can be exercised without VRFS running.
+
+    Not shipped. Not referenced by StatsCam.csproj.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>Harness</AssemblyName>
+    <RootNamespace>StatsCam.Harness</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <SrcDir>..\..\src</SrcDir>
+    <StubDir>..\refstub\MelonLoader\net6</StubDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="SvgDraw.cs" />
+    <Compile Include="$(SrcDir)\Journal.cs" />
+    <Compile Include="$(SrcDir)\model\*.cs" />
+    <Compile Include="$(SrcDir)\Reflect.cs" />
+    <Compile Include="$(SrcDir)\util\*.cs" />
+    <Compile Include="$(SrcDir)\overlay\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MelonLoader">
+      <HintPath>$(StubDir)\MelonLoader.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(StubDir)\0Harmony.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

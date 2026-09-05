@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>StatsCam</AssemblyName>
+    <RootNamespace>StatsCam</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <!--
+    Where the Camera build lives. Override on the command line if it moves:
+      dotnet build -c Release -p:GameDir="D:\Games\VRFS Camera"
+  -->
+  <PropertyGroup>
+    <!-- 1. -p:GameDir=... on the command line wins. -->
+    <!-- 2. Otherwise the STATSCAM_GAMEDIR environment variable. -->
+    <!-- 3. Otherwise a local Camera\ folder beside the repo. -->
+    <GameDir Condition="'$(GameDir)' == ''">$(STATSCAM_GAMEDIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)..\Camera</GameDir>
+    <MlDir>$(GameDir)\MelonLoader\net6</MlDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src\**\*.cs" />
+  </ItemGroup>
+
+  <!--
+    Only two references, both shipped by MelonLoader itself. Everything about the
+    game is resolved by name at runtime, so this project has no dependency on the
+    generated Il2Cpp interop assemblies and builds before they exist.
+  -->
+  <ItemGroup>
+    <Reference Include="MelonLoader">
+      <HintPath>$(MlDir)\MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(MlDir)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckMelonLoader" BeforeTargets="BeforeBuild">
+    <Error Condition="!Exists('$(MlDir)\MelonLoader.dll')"
+           Text="MelonLoader not found at $(MlDir). Install MelonLoader into the Camera folder and run the game once, or pass -p:GameDir=... pointing at your install." />
+  </Target>
+
+  <Target Name="DeployToMods" AfterTargets="Build" Condition="Exists('$(GameDir)\Mods')">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\Mods" ContinueOnError="true" />
+    <Message Importance="high" Text="StatsCam -> $(GameDir)\Mods\$(TargetFileName)" />
+  </Target>
+
+</Project>
