@@ -8,7 +8,7 @@ tools/refstub/MelonLoader/
 # Rendered verification output
 tools/harness/render/
 
-# Never commit anything derived from the game's binaries.
+
 # GameAssembly.dll, global-metadata.dat, interop assemblies and any dumps taken from
 # them are VRFS's, not ours — they do not belong in this repository.
 *.dat
