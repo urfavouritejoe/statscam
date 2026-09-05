@@ -13,10 +13,7 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
-  <!--
-    Where the Camera build lives. Override on the command line if it moves:
-      dotnet build -c Release -p:GameDir="D:\Games\VRFS Camera"
-  -->
+
   <PropertyGroup>
     <!-- 1. -p:GameDir=... on the command line wins. -->
     <!-- 2. Otherwise the STATSCAM_GAMEDIR environment variable. -->
